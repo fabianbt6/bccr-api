@@ -1,0 +1,28 @@
+Package: bccr
+Title: Cliente No Oficial para la API de Indicadores Economicos del BCCR
+Version: 0.1.0
+Authors@R:
+    person("Fabián", "Brenes", email = "fabianbt6@gmail.com",
+           role = c("aut", "cre"))
+Description: Descarga series de indicadores economicos del Banco Central de
+    Costa Rica (BCCR) a traves de su API publica SDDE y las devuelve en formato
+    ordenado (tidy). Permite guardar y leer los datos en formato parquet.
+    Paquete no oficial, sin relacion con el BCCR.
+License: MIT + file LICENSE
+URL: https://github.com/fabianbt6/bccr-api
+BugReports: https://github.com/fabianbt6/bccr-api/issues
+Encoding: UTF-8
+Language: es
+Depends:
+    R (>= 4.1.0)
+Imports:
+    arrow,
+    dplyr,
+    httr2,
+    lubridate,
+    purrr,
+    tibble
+Suggests:
+    here
+Roxygen: list(markdown = TRUE)
+Config/roxygen2/version: 8.0.0

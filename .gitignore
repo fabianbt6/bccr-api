@@ -1,0 +1,11 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+.Renviron
+.positron/
+# Nunca subir datos descargados
+*.parquet
+*.rdata
+*.RData
+*.rds
