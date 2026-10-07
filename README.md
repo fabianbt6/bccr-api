@@ -46,6 +46,16 @@ datos <- leer_bccr("datos/datos_bccr.parquet")
 
 El resultado tiene las columnas `id`, `Serie`, `Fecha` y `Valor`.
 
+## Buscar indicadores
+
+```r
+# Catalogo completo de indicadores disponibles (Excel oficial del BCCR)
+catalogo <- catalogo_bccr()
+
+# Metadatos: nombre, periodicidad, unidad, primer y ultimo dato
+info_bccr(c("317", "3541"))
+```
+
 ## Notas
 
 Partes del codigo se desarrollaron con asistencia de Claude (Anthropic).

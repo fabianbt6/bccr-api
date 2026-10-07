@@ -1,6 +1,3 @@
-bccr_base_url <- "https://apim.bccr.fi.cr/SDDE"
-bccr_endpoint <- "/api/Bccr.GE.SDDE.Publico.Indicadores.API/indicadoresEconomicos/"
-
 #' Descargar un indicador del BCCR
 #'
 #' @param id Codigo del indicador (texto o numero).
@@ -21,18 +18,15 @@ get_serie_bccr <- function(id,
                            token = Sys.getenv("BCCR_API_KEY")) {
   token <- validar_token(token)
 
-  json <- httr2::request(paste0(bccr_base_url, bccr_endpoint, id, "/series")) |>
-    httr2::req_url_query(
-      fechaInicio = formatear_fecha(fecha_inicio),
-      fechaFin = formatear_fecha(fecha_fin),
-      idioma = "es"
-    ) |>
-    httr2::req_auth_bearer_token(token) |>
-    httr2::req_headers(Accept = "application/json") |>
-    httr2::req_perform() |>
-    httr2::resp_body_json()
+  datos <- bccr_request(
+    paste0("/indicadoresEconomicos/", id, "/series"),
+    token,
+    fechaInicio = formatear_fecha(fecha_inicio),
+    fechaFin = formatear_fecha(fecha_fin)
+  ) |>
+    bccr_json()
 
-  parsear_respuesta(json)
+  parsear_series(datos)
 }
 
 #' Descargar varios indicadores del BCCR
@@ -78,43 +72,22 @@ descargar_bccr <- function(ids = indicadores_default(),
   dplyr::bind_rows(res[!fallo], .id = "id")
 }
 
-# --- Funciones internas -------------------------------------------------
+# datos = list(list(codigoIndicador, nombreIndicador,
+#                   series = list(list(fecha, valorDatoPorPeriodo), ...)))
+parsear_series <- function(datos) {
+  vacio <- tibble::tibble(
+    Serie = character(), Fecha = as.Date(character()), Valor = numeric()
+  )
+  if (length(datos) == 0) return(vacio)
 
-validar_token <- function(token) {
-  if (is.null(token) || identical(token, "")) {
-    stop(
-      "Falta la API key del BCCR (variable de entorno BCCR_API_KEY).\n",
-      "1. Corre usethis::edit_r_environ()\n",
-      "2. Agrega la linea BCCR_API_KEY=<tu key> y guarda el archivo\n",
-      "3. Reinicia R",
-      call. = FALSE
-    )
-  }
-  token
-}
-
-formatear_fecha <- function(x) {
-  format(as.Date(x), "%Y/%m/%d")
-}
-
-# La API devuelve una lista que, al aplanarla, tiene 4 campos de metadatos
-# (el 4to es el nombre de la serie) seguidos de pares fecha / valor.
-parsear_respuesta <- function(json) {
-  v <- unlist(json, use.names = FALSE)
-  serie <- v[4]
-  v <- v[-(1:4)]
-  n <- length(v) %/% 2
-
-  if (n == 0) {
-    return(tibble::tibble(
-      Serie = character(), Fecha = as.Date(character()), Valor = numeric()
-    ))
-  }
+  d <- datos[[1]]
+  s <- d$series
+  if (length(s) == 0) return(vacio)
 
   out <- tibble::tibble(
-    Serie = serie,
-    Fecha = lubridate::ymd(v[seq(1, by = 2, length.out = n)]),
-    Valor = suppressWarnings(as.numeric(v[seq(2, by = 2, length.out = n)]))
+    Serie = valor_o_na(d$nombreIndicador),
+    Fecha = como_fecha(vapply(s, function(x) as.character(valor_o_na(x$fecha)), character(1))),
+    Valor = vapply(s, function(x) as.numeric(valor_o_na(x$valorDatoPorPeriodo, NA_real_)), numeric(1))
   )
   out[!is.na(out$Valor), ]
 }

@@ -1,6 +1,6 @@
 Package: bccr
 Title: Cliente No Oficial para la API de Indicadores Economicos del BCCR
-Version: 0.1.0
+Version: 0.2.0
 Authors@R:
     person("Fabián", "Brenes", email = "fabianbt6@gmail.com",
            role = c("aut", "cre"))
@@ -18,9 +18,9 @@ Depends:
 Imports:
     arrow,
     dplyr,
-    httr2,
-    lubridate,
+    httr2 (>= 1.0.0),
     purrr,
+    readxl,
     tibble
 Suggests:
     here
