@@ -1,6 +1,6 @@
 # bccr
 
-Cliente **no oficial** en R para la API publica de indicadores economicos
+Cliente **no oficial** en R para la API publica de indicadores económicos
 (SDDE) del Banco Central de Costa Rica. Descarga las series en formato
 ordenado y las guarda en parquet.
 
