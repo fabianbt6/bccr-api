@@ -16,16 +16,16 @@ pak::pak("fabianbt6/bccr-api")
 
 ## Configuracion (una vez por maquina)
 
-1. Solicita tu API key en el sitio del BCCR.
-2. Abre tu `.Renviron` con `usethis::edit_r_environ()` y agrega:
+1. Solicita el API key en el sitio del BCCR.
+2. Abre `.Renviron` con `usethis::edit_r_environ()` y agregue:
 
    ```
    BCCR_API_KEY=<tu key>
    ```
 
-3. Reinicia R.
+3. Reiniciar R.
 
-El `.Renviron` vive en tu carpeta de usuario, fuera de cualquier repo, asi
+El `.Renviron` vive en su carpeta de usuario, fuera de cualquier repo, así
 que la key nunca se sube a git.
 
 ## Uso
